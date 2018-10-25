@@ -5,7 +5,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Title from "./components/Title";
 import Coindata from "./components/Coindata";
 
-const API = 'https://api.coinmarketcap.com/v2/global/';
+const GLOBAL_COIN_API = 'https://api.coinmarketcap.com/v2/global/';
+const COIN_API = 'https://api.coinmarketcap.com/v2/ticker/?limit=10';
 
 class App extends React.Component {
 
@@ -13,22 +14,23 @@ class App extends React.Component {
         super();
 
         this.state = {
-          value: {
+          g_coin_val: {
             active_cryptocurrencies: undefined,
             active_markets: undefined,
             bitcoin_percentage_of_market_cap: undefined,
             total_market_cap: undefined,
             total_volume_24h: undefined
-          }
+          },
+          coins: []
         }
     }
 
     componentDidMount() {
-        fetch(API)
+        fetch(GLOBAL_COIN_API)
           .then(response => response.json())
           .then(json => {
             this.setState({
-                value: {
+                g_coin_val: {
                     active_cryptocurrencies: json.data.active_cryptocurrencies,
                     active_markets: json.data.active_markets,
                     bitcoin_percentage_of_market_cap: json.data.bitcoin_percentage_of_market_cap,
@@ -36,12 +38,25 @@ class App extends React.Component {
                     total_volume_24h: json.data.quotes.USD.total_volume_24h
                 }
             });
-          });
+        });
+
+        fetch(COIN_API)
+          .then(response => response.json())
+          .then(json => {
+            this.setState({
+                coins: json.data
+            });
+        });
+
     }
 
 
     render() {
-        console.log(this.state)
+        console.log(this.state.coins)
+        var arr = [];
+        for (var key in this.state.coins) {
+          arr.push(this.state.coins[key]);
+        }
         return (
           <div>
             <nav className="navbar navbar-fixed-top bg-light">
@@ -50,14 +65,21 @@ class App extends React.Component {
               </div>
               <div>
                 <Coindata
-                    active_cryptocurrencies= {this.state.value.active_cryptocurrencies}
-                    active_markets= {this.state.value.active_markets}
-                    bitcoin_percentage_of_market_cap= {this.state.value.bitcoin_percentage_of_market_cap}
-                    total_market_cap= {this.state.value.total_market_cap}
-                    total_volume_24h= {this.state.value.total_volume_24h}
+                    active_cryptocurrencies= {this.state.g_coin_val.active_cryptocurrencies}
+                    active_markets= {this.state.g_coin_val.active_markets}
+                    bitcoin_percentage_of_market_cap= {this.state.g_coin_val.bitcoin_percentage_of_market_cap}
+                    total_market_cap= {this.state.g_coin_val.total_market_cap}
+                    total_volume_24h= {this.state.g_coin_val.total_volume_24h}
                 />
               </div>
             </nav>
+            <div>
+                {arr.map(item => (
+                  <div>
+                    <h1>{item.name}</h1>
+                  </div>
+                ))}
+            </div>
           </div>
         );
     }
