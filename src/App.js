@@ -74,11 +74,33 @@ class App extends React.Component {
               </div>
             </nav>
             <div>
-                {arr.map(item => (
-                  <div>
-                    <h1>{item.name}</h1>
-                  </div>
-                ))}
+
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Name</th>
+                      <th scope="col">Market Cap</th>
+                      <th scope="col">Price</th>
+                      <th scope="col">Volume(24h)</th>
+                      <th scope="col">Ciculating Supply</th>
+                      <th scope="col">Change(24h)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    
+
+                    {arr.map(item => (
+                        <tr key={item.id}>
+                            <td>{item.name}</td>
+                            <td>{item.quotes.USD.market_cap}</td>
+                            <td>${item.quotes.USD.price}</td>
+                            <td>{item.quotes.USD.volume_24h}</td>
+                            <td>{item.circulating_supply}</td>
+                            <td>{item.quotes.USD.percent_change_24h}</td>
+                        </tr>
+                    ))}
+                  </tbody>
+                </table>
             </div>
           </div>
         );
